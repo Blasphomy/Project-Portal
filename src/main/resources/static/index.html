@@ -1,0 +1,9 @@
+<!-- src/main/resources/static/index.html -->
+<!DOCTYPE html>
+<html>
+<head><title>WebFlux UI</title></head>
+<body>
+<h2>Click to trigger backend</h2>
+<button onclick="fetch('/hello').then(response => response.text()).then(text => alert(text))">Click Me</button>
+</body>
+</html>
