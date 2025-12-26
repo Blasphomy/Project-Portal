@@ -1,9 +1,159 @@
-<!-- src/main/resources/static/index.html -->
 <!DOCTYPE html>
 <html>
-<head><title>WebFlux UI</title></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamification Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: white; text-align: center; margin-bottom: 30px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { 
+            background: white; 
+            border-radius: 10px; 
+            padding: 20px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .stat-value { font-size: 32px; font-weight: bold; color: #667eea; }
+        button { 
+            background: #667eea; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { background: #764ba2; }
+        .error { color: #d32f2f; }
+        .success { color: #388e3c; }
+        .task-item { 
+            border-left: 4px solid #667eea; 
+            padding: 10px; 
+            margin: 10px 0; 
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+    </style>
+</head>
 <body>
-<h2>Click to trigger backend</h2>
-<button onclick="fetch('/hello').then(response => response.text()).then(text => alert(text))">Click Me</button>
+    <div class="container">
+        <h1>🎮 Gamification Dashboard</h1>
+        
+        <div class="grid">
+            <!-- User Stats Card -->
+            <div class="card">
+                <h2>📊 Your Stats</h2>
+                <p>User ID: <strong id="userId">user-1</strong></p>
+                <p>Total XP: <span class="stat-value" id="totalXp">0</span></p>
+                <p>Badges Earned: <span class="stat-value" id="badgeCount">0</span></p>
+                <button onclick="refreshStats()">Refresh</button>
+            </div>
+
+            <!-- Complete Task Card -->
+            <div class="card">
+                <h2>✅ Tasks</h2>
+                <div id="task-list"></div>
+                <button onclick="loadTasks()">Load Tasks</button>
+            </div>
+
+            <!-- Badges Card -->
+            <div class="card">
+                <h2>🏆 Badges</h2>
+                <div id="badge-list"></div>
+                <button onclick="loadBadges()">Load Badges</button>
+            </div>
+        </div>
+
+        <div id="message" style="text-align: center; margin-top: 20px; font-weight: bold;"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8086/api';
+        const userId = 'user-1';
+
+        function showMessage(text, isError = false) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = isError ? 'error' : 'success';
+            setTimeout(() => msg.textContent = '', 5000);
+        }
+
+        async function refreshStats() {
+            try {
+                const res = await fetch(`${API_BASE}/users/${userId}`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const user = await res.json();
+                document.getElementById('totalXp').textContent = user.totalXp || 0;
+                document.getElementById('badgeCount').textContent = user.badges?.length || 0;
+                showMessage('Stats refreshed!');
+            } catch(e) {
+                showMessage('Error loading stats: ' + e.message, true);
+            }
+        }
+
+        async function loadTasks() {
+            try {
+                const res = await fetch(`${API_BASE}/tasks`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const tasks = await res.json();
+                const html = tasks.map(task => `
+                    <div class="task-item">
+                        <strong>${task.name || task.id}</strong>
+                        <p>${task.description || 'No description'}</p>
+                        <button onclick="completeTask('${task.id}')">Complete</button>
+                    </div>
+                `).join('');
+                document.getElementById('task-list').innerHTML = html || '<p>No tasks found</p>';
+            } catch(e) {
+                showMessage('Error loading tasks: ' + e.message, true);
+            }
+        }
+
+        async function completeTask(taskId) {
+            try {
+                const res = await fetch(`${API_BASE}/progress/tasks/${taskId}/complete?userId=${userId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const result = await res.json();
+                showMessage(`✅ Task completed! XP earned: +${result.xpEarned || 10}`);
+                refreshStats();
+                loadTasks();
+            } catch(e) {
+                showMessage('Error completing task: ' + e.message, true);
+            }
+        }
+
+        async function loadBadges() {
+            try {
+                const res = await fetch(`${API_BASE}/badges`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const badges = await res.json();
+                const html = badges.map(badge => `
+                    <div class="task-item">
+                        ${badge.icon || '🏅'} <strong>${badge.name}</strong>
+                        <p>${badge.description || ''}</p>
+                    </div>
+                `).join('');
+                document.getElementById('badge-list').innerHTML = html || '<p>No badges yet</p>';
+            } catch(e) {
+                showMessage('Error loading badges: ' + e.message, true);
+            }
+        }
+
+        // Load on page load
+        refreshStats();
+        loadTasks();
+        loadBadges();
+    </script>
 </body>
 </html>
