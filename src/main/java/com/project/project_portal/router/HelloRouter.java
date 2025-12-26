@@ -1,6 +1,6 @@
-package com.project.Project_Portal.router;
+package com.project.project_portal.router;
 
-import com.project.Project_Portal.handler.HelloHandler;
+import com.project.project_portal.handler.HelloHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;

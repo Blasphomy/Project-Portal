@@ -1,4 +1,4 @@
-package com.project.Project_Portal;
+package com.project.project_portal;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

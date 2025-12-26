@@ -1,6 +1,7 @@
 -- V1__init_schema.sql
-CREATE TABLE example (
-    id          BIGSERIAL PRIMARY KEY,
+CREATE TABLE topics (
+    id          VARCHAR(100) PRIMARY KEY DEFAULT gen_random_uuid()::text,
     name        VARCHAR(255) NOT NULL,
-    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+    description TEXT
 );
+

@@ -1,4 +1,4 @@
-package com.project.Project_Portal.handler;
+package com.project.project_portal.handler;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
