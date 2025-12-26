@@ -1,0 +1,33 @@
+.quest-page {
+  padding: 20px;
+}
+
+.quest-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.quest-item {
+  background-color: var(--card-background);
+  border: 1px solid var(--shadow-color);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.quest-item h3 {
+  color: var(--primary-color);
+  margin-top: 0;
+}
+
+.task-list {
+  list-style-type: none;
+  padding-left: 20px;
+}
+
+.task-item {
+  padding: 10px;
+  border-left: 3px solid var(--secondary-color);
+  margin-top: 10px;
+}
