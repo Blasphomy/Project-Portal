@@ -1,0 +1,48 @@
+# Global scrape config
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+# Scrape configurations
+scrape_configs:
+  # Backend application metrics
+  - job_name: 'spring-boot-backend'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['backend:8080']
+        labels:
+          application: 'learning-platform'
+          service: 'backend'
+
+  # API Gateway metrics
+  - job_name: 'api-gateway'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['gateway:8080']
+        labels:
+          application: 'learning-platform'
+          service: 'gateway'
+
+  # PostgreSQL exporter (optional - requires postgres_exporter)
+  - job_name: 'postgresql'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          application: 'learning-platform'
+          service: 'database'
+
+  # Redis exporter (optional - requires redis_exporter)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          application: 'learning-platform'
+          service: 'cache'

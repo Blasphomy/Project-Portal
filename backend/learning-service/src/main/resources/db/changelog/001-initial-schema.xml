@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="001-1" author="system">
+        <comment>Create topics table</comment>
+        <createTable tableName="topics">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="icon_url" type="VARCHAR(500)"/>
+            <column name="difficulty_level" type="VARCHAR(50)"/>
+            <column name="estimated_hours" type="INT" defaultValue="0"/>
+            <column name="prerequisites" type="TEXT"/>
+            <column name="category" type="VARCHAR(100)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        
+        <rollback>
+            <dropTable tableName="topics"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="001-2" author="system">
+        <comment>Create quests table</comment>
+        <createTable tableName="quests">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="topic_id" type="VARCHAR(255)">
+                <constraints nullable="false" foreignKeyName="fk_quest_topic" 
+                            references="topics(id)" deleteCascade="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="sequence_order" type="INT" defaultValue="0"/>
+            <column name="difficulty" type="VARCHAR(50)"/>
+            <column name="estimated_minutes" type="INT" defaultValue="0"/>
+            <column name="learning_objectives" type="TEXT"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        
+        <createIndex tableName="quests" indexName="idx_quest_topic_id">
+            <column name="topic_id"/>
+        </createIndex>
+        
+        <rollback>
+            <dropTable tableName="quests"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="001-3" author="system">
+        <comment>Create tasks table</comment>
+        <createTable tableName="tasks">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="quest_id" type="VARCHAR(255)">
+                <constraints nullable="false" foreignKeyName="fk_task_quest" 
+                            references="quests(id)" deleteCascade="true"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="xp_reward" type="INT" defaultValue="0"/>
+            <column name="sequence_order" type="INT" defaultValue="0"/>
+            <column name="has_code_challenge" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="starter_code" type="TEXT"/>
+            <column name="solution_code" type="TEXT"/>
+            <column name="test_cases" type="TEXT"/>
+            <column name="hints" type="TEXT"/>
+            <column name="difficulty" type="VARCHAR(50)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        
+        <createIndex tableName="tasks" indexName="idx_task_quest_id">
+            <column name="quest_id"/>
+        </createIndex>
+        
+        <rollback>
+            <dropTable tableName="tasks"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="001-4" author="system">
+        <comment>Create badges table</comment>
+        <createTable tableName="badges">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="icon_url" type="VARCHAR(500)"/>
+            <column name="requirement_type" type="VARCHAR(100)"/>
+            <column name="requirement_value" type="INT" defaultValue="0"/>
+            <column name="tier" type="VARCHAR(50)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        
+        <rollback>
+            <dropTable tableName="badges"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

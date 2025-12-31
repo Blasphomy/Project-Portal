@@ -1,0 +1,141 @@
+version: '3.8'
+
+services:
+  # PostgreSQL for User Service
+  postgres-user:
+    image: postgres:14-alpine
+    container_name: learning-platform-user-db
+    environment:
+      POSTGRES_DB: userdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5433:5432"
+    volumes:
+      - user_data:/var/lib/postgresql/data
+    networks:
+      - learning-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PostgreSQL for Learning Service
+  postgres-learning:
+    image: postgres:14-alpine
+    container_name: learning-platform-learning-db
+    environment:
+      POSTGRES_DB: learningdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5434:5432"
+    volumes:
+      - learning_data:/var/lib/postgresql/data
+    networks:
+      - learning-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # User Service
+  user-service:
+    build:
+      context: ./backend
+      dockerfile: user-service/Dockerfile
+    container_name: learning-platform-user-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-user:5432/userdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-min-32-characters-long}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres-user:
+        condition: service_healthy
+    networks:
+      - learning-network
+    restart: unless-stopped
+
+  # Learning Service
+  learning-service:
+    build:
+      context: ./backend
+      dockerfile: learning-service/Dockerfile
+    container_name: learning-platform-learning-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-learning:5432/learningdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres-learning:
+        condition: service_healthy
+    networks:
+      - learning-network
+    restart: unless-stopped
+
+  # AI Service
+  ai-service:
+    build:
+      context: ./backend
+      dockerfile: ai-service/Dockerfile
+    container_name: learning-platform-ai-service
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    ports:
+      - "8083:8083"
+    networks:
+      - learning-network
+    restart: unless-stopped
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./backend
+      dockerfile: api-gateway/Dockerfile
+    container_name: learning-platform-api-gateway
+    environment:
+      USER_SERVICE_URL: http://user-service:8081
+      LEARNING_SERVICE_URL: http://learning-service:8082
+      AI_SERVICE_URL: http://ai-service:8083
+    ports:
+      - "8080:8080"
+    depends_on:
+      - user-service
+      - learning-service
+      - ai-service
+    networks:
+      - learning-network
+    restart: unless-stopped
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: http://localhost:8080
+    container_name: learning-platform-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - learning-network
+    restart: unless-stopped
+
+networks:
+  learning-network:
+    driver: bridge
+
+volumes:
+  user_data:
+  learning_data:
