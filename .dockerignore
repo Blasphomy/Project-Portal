@@ -1,0 +1,43 @@
+# Git
+.git/
+.gitignore
+
+# Build outputs
+**/target/
+**/build/
+**/dist/
+**/.next/
+
+# Dependencies
+**/node_modules/
+**/.pnp/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Testing
+coverage/
+*.test.js
+
+# Documentation artifacts (keep in repo)
+!.gemini/
+
+# Maven wrapper
+!.mvn/wrapper/maven-wrapper.jar

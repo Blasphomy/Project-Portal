@@ -35,3 +35,26 @@ build/
 # Log files
 backend.log
 frontend.log
+*.log
+
+# Environment files (sensitive)
+*.env
+.env.local
+.env.*.local
+
+# Node modules
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+.next/
+out/
+
+# Docker
+.docker/
+
+# Misc
+.DS_Store
+
+cloudflared.exe

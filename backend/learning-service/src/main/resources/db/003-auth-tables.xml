@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="003-1" author="system">
+        <comment>Create users table for authentication</comment>
+        <createTable tableName="users">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(100)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="password_hash" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="full_name" type="VARCHAR(255)"/>
+            <column name="avatar_url" type="VARCHAR(500)"/>
+            <column name="total_xp" type="INT" defaultValue="0"/>
+            <column name="level" type="INT" defaultValue="1"/>
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true"/>
+            <column name="is_email_verified" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="oauth_provider" type="VARCHAR(50)"/>
+            <column name="oauth_id" type="VARCHAR(255)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="last_login_at" type="TIMESTAMP"/>
+        </createTable>
+        
+        <createIndex tableName="users" indexName="idx_users_email">
+            <column name="email"/>
+        </createIndex>
+        <createIndex tableName="users" indexName="idx_users_username">
+            <column name="username"/>
+        </createIndex>
+        
+        <rollback>
+            <dropTable tableName="users"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="003-2" author="system">
+        <comment>Create roles table</comment>
+        <createTable tableName="roles">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        
+        <rollback>
+            <dropTable tableName="roles"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="003-3" author="system">
+        <comment>Create user_roles junction table</comment>
+        <createTable tableName="user_roles">
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false" foreignKeyName="fk_user_role_user" 
+                            references="users(id)" deleteCascade="true"/>
+            </column>
+            <column name="role_id" type="VARCHAR(255)">
+                <constraints nullable="false" foreignKeyName="fk_user_role_role" 
+                            references="roles(id)" deleteCascade="true"/>
+            </column>
+        </createTable>
+        
+        <addPrimaryKey tableName="user_roles" 
+                      columnNames="user_id, role_id" 
+                      constraintName="pk_user_roles"/>
+        
+        <rollback>
+            <dropTable tableName="user_roles"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="003-4" author="system">
+        <comment>Create user_progress table</comment>
+        <createTable tableName="user_progress">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false" foreignKeyName="fk_progress_user" 
+                            references="users(id)" deleteCascade="true"/>
+            </column>
+            <column name="task_id" type="VARCHAR(255)">
+                <constraints nullable="false" foreignKeyName="fk_progress_task" 
+                            references="tasks(id)" deleteCascade="true"/>
+            </column>
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code_submission" type="TEXT"/>
+            <column name="xp_earned" type="INT" defaultValue="0"/>
+            <column name="attempts" type="INT" defaultValue="0"/>
+            <column name="completed_at" type="TIMESTAMP"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        
+        <createIndex tableName="user_progress" indexName="idx_progress_user">
+            <column name="user_id"/>
+        </createIndex>
+        <createIndex tableName="user_progress" indexName="idx_progress_task">
+            <column name="task_id"/>
+        </createIndex>
+        
+        <rollback>
+            <dropTable tableName="user_progress"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="003-5" author="system">
+        <comment>Create user_badges junction table</comment>
+        <createTable tableName="user_badges">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false" foreignKeyName="fk_user_badge_user" 
+                            references="users(id)" deleteCascade="true"/>
+            </column>
+            <column name="badge_id" type="VARCHAR(255)">
+                <constraints nullable="false" foreignKeyName="fk_user_badge_badge" 
+                            references="badges(id)" deleteCascade="true"/>
+            </column>
+            <column name="earned_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        
+        <createIndex tableName="user_badges" indexName="idx_user_badges_user">
+            <column name="user_id"/>
+        </createIndex>
+        
+        <rollback>
+            <dropTable tableName="user_badges"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="003-6" author="system">
+        <comment>Create refresh_tokens table for JWT</comment>
+        <createTable tableName="refresh_tokens">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false" foreignKeyName="fk_refresh_token_user" 
+                            references="users(id)" deleteCascade="true"/>
+            </column>
+            <column name="token" type="VARCHAR(500)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="expires_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="revoked" type="BOOLEAN" defaultValueBoolean="false"/>
+        </createTable>
+        
+        <createIndex tableName="refresh_tokens" indexName="idx_refresh_token">
+            <column name="token"/>
+        </createIndex>
+        <createIndex tableName="refresh_tokens" indexName="idx_refresh_token_user">
+            <column name="user_id"/>
+        </createIndex>
+        
+        <rollback>
+            <dropTable tableName="refresh_tokens"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="003-7" author="system">
+        <comment>Insert default roles</comment>
+        <insert tableName="roles">
+            <column name="id" value="role-admin"/>
+            <column name="name" value="ADMIN"/>
+            <column name="description" value="Administrator with full access"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="id" value="role-user"/>
+            <column name="name" value="USER"/>
+            <column name="description" value="Regular user"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="id" value="role-mentor"/>
+            <column name="name" value="MENTOR"/>
+            <column name="description" value="Mentor who can review code"/>
+        </insert>
+        
+        <rollback>
+            <delete tableName="roles">
+                <where>id IN ('role-admin', 'role-user', 'role-mentor')</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

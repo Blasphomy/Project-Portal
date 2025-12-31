@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="002-1" author="system">
+        <comment>Enable pgvector extension for vector similarity search</comment>
+        <sql>CREATE EXTENSION IF NOT EXISTS vector;</sql>
+        
+        <rollback>
+            <sql>DROP EXTENSION IF EXISTS vector;</sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="002-2" author="system">
+        <comment>Create study_materials table with vector search</comment>
+        <createTable tableName="study_materials">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="topic_id" type="VARCHAR(255)">
+                <constraints foreignKeyName="fk_study_topic" 
+                            references="topics(id)" deleteCascade="true"/>
+            </column>
+            <column name="quest_id" type="VARCHAR(255)">
+                <constraints foreignKeyName="fk_study_quest" 
+                            references="quests(id)" deleteCascade="true"/>
+            </column>
+            <column name="task_id" type="VARCHAR(255)">
+                <constraints foreignKeyName="fk_study_task" 
+                            references="tasks(id)" deleteCascade="true"/>
+            </column>
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_type" type="VARCHAR(50)"/>
+            <column name="generated_by" type="VARCHAR(50)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        
+        <createIndex tableName="study_materials" indexName="idx_study_topic">
+            <column name="topic_id"/>
+        </createIndex>
+        <createIndex tableName="study_materials" indexName="idx_study_quest">
+            <column name="quest_id"/>
+        </createIndex>
+        <createIndex tableName="study_materials" indexName="idx_study_task">
+            <column name="task_id"/>
+        </createIndex>
+        
+        <rollback>
+            <dropTable tableName="study_materials"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="002-3" author="system">
+        <comment>Add vector embedding column to study materials</comment>
+        <sql>
+            ALTER TABLE study_materials 
+            ADD COLUMN embedding vector(1536);
+        </sql>
+        
+        <rollback>
+            <sql>ALTER TABLE study_materials DROP COLUMN embedding;</sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="002-4" author="system">
+        <comment>Create vector similarity search index</comment>
+        <sql>
+            CREATE INDEX idx_study_materials_embedding 
+            ON study_materials 
+            USING ivfflat (embedding vector_cosine_ops);
+        </sql>
+        
+        <rollback>
+            <sql>DROP INDEX IF EXISTS idx_study_materials_embedding;</sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="002-5" author="system">
+        <comment>Create resource_links table</comment>
+        <createTable tableName="resource_links">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="topic_id" type="VARCHAR(255)">
+                <constraints foreignKeyName="fk_resource_topic" 
+                            references="topics(id)" deleteCascade="true"/>
+            </column>
+            <column name="quest_id" type="VARCHAR(255)">
+                <constraints foreignKeyName="fk_resource_quest" 
+                            references="quests(id)" deleteCascade="true"/>
+            </column>
+            <column name="task_id" type="VARCHAR(255)">
+                <constraints foreignKeyName="fk_resource_task" 
+                            references="tasks(id)" deleteCascade="true"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="url" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="link_type" type="VARCHAR(50)"/>
+            <column name="relevance_score" type="DECIMAL(3,2)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+        
+        <createIndex tableName="resource_links" indexName="idx_resource_topic">
+            <column name="topic_id"/>
+        </createIndex>
+        
+        <rollback>
+            <dropTable tableName="resource_links"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
