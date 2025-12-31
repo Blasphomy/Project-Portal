@@ -9,6 +9,16 @@ export const aiService = {
         });
     },
 
+    async generateSkillTree(goal, userId) {
+        return apiClient.post('/api/ai/generate-skill-tree', {
+            goal,
+        }, {
+            headers: {
+                'X-User-Id': userId,
+            }
+        });
+    },
+
     // Get AI-generated study material for a quest
     async getStudyMaterial(topicName, questName, questDescription, tasks) {
         const prompt = `Generate comprehensive study material for learning ${topicName}. 

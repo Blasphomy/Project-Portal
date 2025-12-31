@@ -1,0 +1,121 @@
+/* Cosmic Theme for Skill Tree Page */
+
+.skill-tree-page {
+    width: 100vw;
+    height: 100vh;
+    background: #0a0b2a;
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevent scrollbars from main page layout */
+}
+
+.skill-tree-header {
+    padding: 1.5rem 2rem;
+    text-align: center;
+    background: rgba(28, 29, 62, 0.5);
+    backdrop-filter: blur(5px);
+    border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.skill-tree-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    background: -webkit-linear-gradient(45deg, #667eea, #f5576c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.skill-tree-header p {
+    margin: 0.5rem 0 0;
+    color: #a0a0a0;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.react-flow-container {
+    flex-grow: 1;
+    background: #0a0b2a;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzBhMGIyYSI+PC9yZWN0PjxnIGZpbGwtb3BhY2l0eT0iLjMiPjxjaXJjbGUgY3g9IjAiIGN5PSIwIiByPSIxLjUiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIxMDAiIGN5PSI1MCIgcj0iMS41IiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iMjAiIGN5PSI4MCIgcj0iMSIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNzAiIHI9IjIiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSI5MCIgY3k9IjEwIiByPSIxIiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iNDAiIGN5PSIyMCIgcj0iMiIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9Ijc1IiBjeT0iOTAiIHI9IjEuMiIgZmlsbD0iI2ZmZiIvPjwvZz48L3N2Zz4=');
+}
+
+/* Custom Node: "Star" or "Planet" */
+.react-flow__node {
+    background: #1c1d3e !important;
+    border-radius: 50% !important; /* Make it circular */
+    border: 2px solid #667eea !important;
+    color: #e0e0e0 !important;
+    width: 100px !important;
+    height: 100px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 12px;
+    padding: 10px;
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.5), 0 0 25px rgba(102, 126, 234, 0.3) inset;
+    transition: all 0.3s ease;
+}
+
+.react-flow__node:hover {
+    box-shadow: 0 0 25px rgba(102, 126, 234, 0.8), 0 0 40px rgba(102, 126, 234, 0.5) inset;
+    transform: scale(1.05);
+}
+
+/* Style for selected nodes */
+.react-flow__node.selected {
+    border-color: #f5576c !important;
+    box-shadow: 0 0 25px rgba(245, 87, 108, 0.8), 0 0 40px rgba(245, 87, 108, 0.5) inset;
+}
+
+.react-flow__node-default {
+    border-radius: 50%; /* Ensure default nodes are also circular */
+}
+
+.react-flow__handle {
+    opacity: 0 !important; /* Hide the default handles */
+}
+
+/* Custom Edge: "Constellation Lines" */
+.react-flow__edgepath {
+    stroke: rgba(102, 126, 234, 0.6) !important;
+    stroke-width: 2 !important;
+}
+
+.react-flow__edge.animated path {
+    stroke-dasharray: 5, 5;
+    animation: dashdraw 0.5s linear infinite;
+}
+
+/* Controls and Minimap */
+.react-flow__controls {
+    background-color: #1c1d3e !important;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 8px;
+}
+
+.react-flow__controls-button {
+    color: #667eea !important;
+    background: transparent !important;
+}
+
+.react-flow__controls-button:hover {
+    background: #2d3748 !important;
+}
+
+.react-flow__minimap {
+    background-color: #1c1d3e !important;
+    border-radius: 8px;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.no-skill-tree-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 1.2rem;
+    color: #a0a0a0;
+}

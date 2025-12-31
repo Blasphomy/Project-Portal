@@ -1,0 +1,72 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="005-1" author="system">
+        <comment>Create the skill_trees table</comment>
+        <createTable tableName="skill_trees">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1024)"/>
+        </createTable>
+        <createIndex tableName="skill_trees" indexName="idx_skill_trees_user_id">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="005-2" author="system">
+        <comment>Create the quest_nodes table</comment>
+        <createTable tableName="quest_nodes">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="skill_tree_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_quest_nodes_skill_tree" references="skill_trees(id)" deleteCascade="true"/>
+            </column>
+            <column name="quest_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1024)"/>
+            <column name="category" type="VARCHAR(255)"/>
+        </createTable>
+        <createIndex tableName="quest_nodes" indexName="idx_quest_nodes_skill_tree_id">
+            <column name="skill_tree_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="005-3" author="system">
+        <comment>Create the quest_dependencies table</comment>
+        <createTable tableName="quest_dependencies">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="skill_tree_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_quest_dependencies_skill_tree" references="skill_trees(id)" deleteCascade="true"/>
+            </column>
+            <column name="source_quest_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="target_quest_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="quest_dependencies" indexName="idx_quest_dependencies_skill_tree_id">
+            <column name="skill_tree_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

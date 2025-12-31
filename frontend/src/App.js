@@ -10,6 +10,8 @@ import LeaderboardPage from './components/Leaderboard/LeaderboardPage';
 import TopicsPage from './components/Topics/TopicsPage';
 import QuestsPage from './components/Quests/QuestsPage';
 import QuestDetailPage from './components/Quest/QuestDetailPage';
+import CustomPathPage from './components/CustomPath/CustomPathPage';
+import SkillTreePage from './components/SkillTree/SkillTreePage'; // Import the new component
 import './App.css';
 
 function App() {
@@ -73,6 +75,25 @@ function App() {
               element={
                 <ProtectedRoute>
                   <QuestDetailPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/custom-path"
+              element={
+                <ProtectedRoute>
+                  <CustomPathPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Add the new route for the skill tree page */}
+            <Route
+              path="/skill-tree"
+              element={
+                <ProtectedRoute>
+                  <SkillTreePage />
                 </ProtectedRoute>
               }
             />

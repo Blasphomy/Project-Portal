@@ -1,0 +1,13 @@
+package com.project.ai.clients;
+
+import com.project.ai.dto.SkillTreeResponse;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+@FeignClient(name = "user-progress-service", url = "${user-progress-service.url}")
+public interface UserProgressClient {
+
+    @PostMapping("/api/skill-trees")
+    void createSkillTree(@RequestBody SkillTreeResponse skillTree);
+}

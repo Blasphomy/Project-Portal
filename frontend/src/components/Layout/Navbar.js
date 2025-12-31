@@ -30,6 +30,9 @@ function Navbar() {
                         <span className="level-badge">⭐ Level {stats.currentLevel}</span>
                         <span className="xp-text">{stats.totalXP} XP</span>
                     </div>
+                    <button onClick={() => navigate('/custom-path')} className="btn-custom-path">
+                        Create Path
+                    </button>
                     <button onClick={() => navigate('/leaderboard')} className="btn-leaderboard">
                         Leaderboard
                     </button>

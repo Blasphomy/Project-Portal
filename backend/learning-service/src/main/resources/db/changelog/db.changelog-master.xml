@@ -11,5 +11,6 @@
     <!-- <include file="db/changelog/002-add-vector-support.xml"/> -->
     <include file="db/changelog/003-auth-tables.xml"/>
     <include file="db/changelog/004-enhanced-content-metadata.xml"/>
+    <include file="db/changelog/005-skill-tree-tables.xml"/>
     
 </databaseChangeLog>

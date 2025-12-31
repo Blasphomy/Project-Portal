@@ -1,6 +1,10 @@
+/* Cosmic Theme for Quest Detail Page */
+
 .quest-detail-page {
     min-height: 100vh;
-    background: #1a202c;
+    background: #0a0b2a;
+    /* Adding a subtle constellation background */
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzBhMGIyYSI+PC9yZWN0PjxnIGZpbGwtb3BhY2l0eT0iLjMiPjxjaXJjbGUgY3g9IjAiIGN5PSIwIiByPSIxLjUiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIxMDAiIGN5PSI1MCIgcj0iMS41IiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iMjAiIGN5PSI4MCIgcj0iMSIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNzAiIHI9IjIiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSI5MCIgY3k9IjEwIiByPSIxIiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iNDAiIGN5PSIyMCIgcj0iMiIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9Ijc1IiBjeT0iOTAiIHI9IjEuMiIgZmlsbD0iI2ZmZiIvPjwvZz48L3N2Zz4=');
 }
 
 .quest-detail-container {
@@ -10,32 +14,37 @@
 }
 
 .quest-detail-header {
-    background: white;
+    /* Making it a floating, transparent-like panel */
+    background: rgba(28, 29, 62, 0.5);
+    backdrop-filter: blur(10px);
     padding: 2rem;
-    border-radius: 16px;
+    border-radius: 20px;
     margin-bottom: 2rem;
+    border: 1px solid rgba(102, 126, 234, 0.3);
 }
 
 .quest-detail-header h1 {
-    font-size: 2rem;
-    color: #1a202c;
+    font-size: 2.2rem; /* Slightly larger */
+    color: #e0e0e0;
     margin: 1rem 0 0.5rem 0;
+    font-weight: 700;
 }
 
 .quest-detail-header p {
-    color: #718096;
+    color: #a0a0a0; /* Lighter grey for readability */
     font-size: 1.1rem;
     margin-bottom: 1rem;
 }
 
 .quest-progress {
     display: inline-block;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #667eea 0%, #f5576c 100%);
     color: white;
     padding: 0.5rem 1.25rem;
     border-radius: 20px;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.9rem;
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
 }
 
 .back-button {
@@ -46,12 +55,13 @@
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
 }
 
 .back-button:hover {
     background: #667eea;
     color: white;
+    box-shadow: 0 0 15px #667eea;
 }
 
 .quest-content {
@@ -61,21 +71,32 @@
     margin-bottom: 2rem;
 }
 
+/* Holographic Panel Style */
 .task-panel,
-.editor-panel {
-    background: white;
-    border-radius: 16px;
+.editor-panel,
+.task-navigation {
+    background: #1c1d3e;
+    border-radius: 20px;
     padding: 2rem;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+.task-panel:hover,
+.editor-panel:hover,
+.task-navigation:hover {
+    box-shadow: 0 0 25px rgba(102, 126, 234, 0.4);
 }
 
 .task-panel h2 {
-    color: #1a202c;
+    color: #e0e0e0;
     margin-bottom: 1rem;
     font-size: 1.5rem;
 }
 
 .task-description {
-    color: #718096;
+    color: #a0a0a0;
     line-height: 1.8;
     margin-bottom: 2rem;
     white-space: pre-wrap;
@@ -85,6 +106,7 @@
     margin-bottom: 1.5rem;
 }
 
+/* Enhanced Button Style */
 .btn-hint {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     color: white;
@@ -93,20 +115,22 @@
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: all 0.3s ease;
 }
 
 .btn-hint:hover:not(:disabled) {
     transform: translateY(-2px);
+    box-shadow: 0 0 20px #f5576c;
 }
 
 .btn-hint:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
+    background: #2d3748;
 }
 
 .hint-box {
-    background: #fff5e6;
+    background: rgba(245, 87, 108, 0.1);
     border-left: 4px solid #f5576c;
     padding: 1.25rem;
     border-radius: 8px;
@@ -114,13 +138,13 @@
 }
 
 .hint-box strong {
-    color: #1a202c;
+    color: #f093fb;
     display: block;
     margin-bottom: 0.5rem;
 }
 
 .hint-box p {
-    color: #4a5568;
+    color: #e0e0e0;
     margin: 0;
     line-height: 1.6;
 }
@@ -144,7 +168,7 @@
 }
 
 .editor-container {
-    border: 2px solid #e2e8f0;
+    border: 1px solid #2d3748;
     border-radius: 0 0 8px 8px;
     overflow: hidden;
 }
@@ -159,50 +183,51 @@
     border: none;
     padding: 1rem 2rem;
     border-radius: 8px;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 1rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
     width: 100%;
 }
 
 .btn-submit:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(34, 197, 94, 0.3);
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
 }
 
 .btn-submit:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
+    background: #2d3748;
 }
 
 .output-box {
     margin-top: 1.5rem;
     padding: 1.25rem;
     border-radius: 8px;
-    background: #f7fafc;
-    border: 2px solid #e2e8f0;
+    background: #0a0b2a;
+    border: 1px solid #2d3748;
 }
 
 .output-box.success {
-    background: #d1fae5;
+    background: rgba(74, 222, 128, 0.1);
     border-color: #4ade80;
 }
 
 .output-box.error {
-    background: #fee2e2;
+    background: rgba(248, 113, 113, 0.1);
     border-color: #f87171;
 }
 
 .output-box strong {
     display: block;
     margin-bottom: 0.5rem;
-    color: #1a202c;
+    color: #e0e0e0;
 }
 
 .output-box pre {
     margin: 0;
-    color: #2d3748;
+    color: #d1d5db;
     white-space: pre-wrap;
     word-wrap: break-word;
 }
@@ -211,9 +236,7 @@
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    background: white;
-    padding: 1.5rem;
-    border-radius: 16px;
+    padding: 1.5rem; /* Adjusted from 2rem to match content */
 }
 
 .btn-nav {
@@ -224,17 +247,19 @@
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: all 0.3s ease;
     flex: 1;
 }
 
 .btn-nav:hover:not(:disabled) {
     transform: translateY(-2px);
+    box-shadow: 0 0 15px #764ba2;
 }
 
 .btn-nav:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+    background: #2d3748;
 }
 
 .loading-container,
@@ -248,7 +273,7 @@
 }
 
 .spinner {
-    border: 4px solid #e2e8f0;
+    border: 4px solid #2d3748;
     border-top: 4px solid #667eea;
     border-radius: 50%;
     width: 50px;
@@ -266,16 +291,10 @@
     }
 }
 
-.loading-container p {
+.loading-container p, .error-container p {
     margin-top: 1rem;
-    color: white;
+    color: #e0e0e0;
     font-size: 1.1rem;
-}
-
-.error-container p {
-    color: white;
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
 }
 
 .btn-back {
