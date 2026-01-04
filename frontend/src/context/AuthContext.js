@@ -32,8 +32,16 @@ export const AuthProvider = ({ children }) => {
     const register = async (username, email, password, fullName) => {
         try {
             const response = await authService.register(username, email, password, fullName);
-            return { success: response.success, message: response.message };
+            console.log('[AuthContext] Register response:', response);
+            console.log('[AuthContext] response.success:', response.success);
+            if (response.success) {
+                console.log('[AuthContext] Registration SUCCESS detected');
+                return { success: true, message: 'Registration successful!' };
+            }
+            console.log('[AuthContext] Registration FAILED - returning error:', response.error || 'Registration failed');
+            return { success: false, error: response.error || 'Registration failed' };
         } catch (error) {
+            console.error('[AuthContext] Register exception:', error);
             return { success: false, error: error.message };
         }
     };

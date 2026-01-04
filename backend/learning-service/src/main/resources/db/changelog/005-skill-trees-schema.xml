@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="007-create-skill-trees-tables" author="system">
+        <!-- Skill Trees table -->
+        <createTable tableName="skill_trees">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="user_goal" type="TEXT"/>
+            <column name="status" type="VARCHAR(50)" defaultValue="active">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Quest Nodes table -->
+        <createTable tableName="quest_nodes">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="skill_tree_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_quest_nodes_skill_tree" references="skill_trees(id)" deleteCascade="true"/>
+            </column>
+            <column name="quest_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="category" type="VARCHAR(50)"/>
+            <column name="status" type="VARCHAR(50)" defaultValue="locked">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unlocked_at" type="TIMESTAMP"/>
+            <column name="completed_at" type="TIMESTAMP"/>
+            <column name="position_x" type="FLOAT" defaultValue="0"/>
+            <column name="position_y" type="FLOAT" defaultValue="0"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Quest Dependencies table -->
+        <createTable tableName="quest_dependencies">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="skill_tree_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_quest_deps_skill_tree" references="skill_trees(id)" deleteCascade="true"/>
+            </column>
+            <column name="source_quest_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="target_quest_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Indexes for performance -->
+        <createIndex indexName="idx_skill_trees_user_id" tableName="skill_trees">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_quest_nodes_skill_tree_id" tableName="quest_nodes">
+            <column name="skill_tree_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_quest_nodes_quest_id" tableName="quest_nodes">
+            <column name="quest_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_quest_dependencies_skill_tree_id" tableName="quest_dependencies">
+            <column name="skill_tree_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

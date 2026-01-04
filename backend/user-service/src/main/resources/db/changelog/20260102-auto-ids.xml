@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20260102-auto-ids-user-service" author="antigravity">
+        <addDefaultValue tableName="users" columnName="id" defaultValueComputed="gen_random_uuid()"/>
+        <addDefaultValue tableName="roles" columnName="id" defaultValueComputed="gen_random_uuid()"/>
+        <addDefaultValue tableName="user_progress" columnName="id" defaultValueComputed="gen_random_uuid()"/>
+        <addDefaultValue tableName="user_badges" columnName="id" defaultValueComputed="gen_random_uuid()"/>
+        <addDefaultValue tableName="refresh_tokens" columnName="id" defaultValueComputed="gen_random_uuid()"/>
+    </changeSet>
+
+</databaseChangeLog>

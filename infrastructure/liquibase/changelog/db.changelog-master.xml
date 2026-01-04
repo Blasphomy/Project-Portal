@@ -9,6 +9,7 @@
     <include file="db/changelog/001-initial-schema.xml"/>
     <include file="db/changelog/002-add-vector-support.xml"/>
     <include file="db/changelog/003-auth-tables.xml"/>
-    <include file="db/changelog/004-enhanced-content-metadata.xml"/>
+    <!-- 004-enhanced-content-metadata.xml REMOVED - Pure AI experience, no seed data -->
+    <include file="db/changelog/005-skill-tree-tables.xml"/>
     
 </databaseChangeLog>

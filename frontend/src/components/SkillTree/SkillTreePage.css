@@ -1,121 +1,277 @@
-/* Cosmic Theme for Skill Tree Page */
+/* Skill Tree Page - Cosmic Theme */
 
 .skill-tree-page {
-    width: 100vw;
-    height: 100vh;
-    background: #0a0b2a;
-    color: #e0e0e0;
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+}
+
+/* Header Panel */
+.skill-tree-header {
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 10;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+}
+
+.header-description {
+    color: var(--text-secondary);
+    font-size: 16px;
+    margin-top: 8px;
+    line-height: 1.6;
+}
+
+.user-goal {
+    margin-top: 12px;
+    padding: 12px;
+    background: rgba(102, 126, 234, 0.1);
+    border-left: 3px solid #667eea;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.goal-label {
+    font-weight: 600;
+    color: #667eea;
+}
+
+/* Progress Section */
+.progress-section {
+    min-width: 200px;
+}
+
+.progress-stats {
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Prevent scrollbars from main page layout */
+    align-items: center;
+    margin-bottom: 12px;
 }
 
-.skill-tree-header {
-    padding: 1.5rem 2rem;
-    text-align: center;
-    background: rgba(28, 29, 62, 0.5);
-    backdrop-filter: blur(5px);
-    border-bottom: 1px solid rgba(102, 126, 234, 0.3);
-}
-
-.skill-tree-header h1 {
-    margin: 0;
-    font-size: 2rem;
+.stat-number {
+    font-size: 36px;
     font-weight: 700;
-    background: -webkit-linear-gradient(45deg, #667eea, #f5576c);
+    background: linear-gradient(135deg, #667eea 0%, #f5576c 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: 'Orbitron', sans-serif;
 }
 
-.skill-tree-header p {
-    margin: 0.5rem 0 0;
-    color: #a0a0a0;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.react-flow-container {
-    flex-grow: 1;
-    background: #0a0b2a;
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzBhMGIyYSI+PC9yZWN0PjxnIGZpbGwtb3BhY2l0eT0iLjMiPjxjaXJjbGUgY3g9IjAiIGN5PSIwIiByPSIxLjUiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIxMDAiIGN5PSI1MCIgcj0iMS41IiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iMjAiIGN5PSI4MCIgcj0iMSIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNzAiIHI9IjIiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSI5MCIgY3k9IjEwIiByPSIxIiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iNDAiIGN5PSIyMCIgcj0iMiIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9Ijc1IiBjeT0iOTAiIHI9IjEuMiIgZmlsbD0iI2ZmZiIvPjwvZz48L3N2Zz4=');
-}
-
-/* Custom Node: "Star" or "Planet" */
-.react-flow__node {
-    background: #1c1d3e !important;
-    border-radius: 50% !important; /* Make it circular */
-    border: 2px solid #667eea !important;
-    color: #e0e0e0 !important;
-    width: 100px !important;
-    height: 100px !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+.stat-label {
     font-size: 12px;
-    padding: 10px;
-    box-shadow: 0 0 15px rgba(102, 126, 234, 0.5), 0 0 25px rgba(102, 126, 234, 0.3) inset;
-    transition: all 0.3s ease;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
 }
 
-.react-flow__node:hover {
-    box-shadow: 0 0 25px rgba(102, 126, 234, 0.8), 0 0 40px rgba(102, 126, 234, 0.5) inset;
-    transform: scale(1.05);
+/* React Flow Container */
+.react-flow-container {
+    height: calc(100vh - 250px);
+    background: rgba(10, 11, 42, 0.3);
+    border-radius: 16px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    overflow: hidden;
+    box-shadow: inset 0 0 40px rgba(102, 126, 234, 0.1);
 }
 
-/* Style for selected nodes */
-.react-flow__node.selected {
-    border-color: #f5576c !important;
-    box-shadow: 0 0 25px rgba(245, 87, 108, 0.8), 0 0 40px rgba(245, 87, 108, 0.5) inset;
+/* Cosmic Controls Styling */
+.cosmic-controls {
+    background: rgba(28, 29, 62, 0.9) !important;
+    border: 1px solid rgba(102, 126, 234, 0.3) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 
-.react-flow__node-default {
-    border-radius: 50%; /* Ensure default nodes are also circular */
+.cosmic-controls button {
+    background: rgba(102, 126, 234, 0.2) !important;
+    border-bottom: 1px solid rgba(102, 126, 234, 0.3) !important;
+    color: var(--text-primary) !important;
+    transition: all 0.3s ease !important;
 }
 
-.react-flow__handle {
-    opacity: 0 !important; /* Hide the default handles */
+.cosmic-controls button:hover {
+    background: rgba(102, 126, 234, 0.4) !important;
 }
 
-/* Custom Edge: "Constellation Lines" */
-.react-flow__edgepath {
-    stroke: rgba(102, 126, 234, 0.6) !important;
-    stroke-width: 2 !important;
+.cosmic-controls button svg {
+    fill: currentColor !important;
 }
 
-.react-flow__edge.animated path {
-    stroke-dasharray: 5, 5;
-    animation: dashdraw 0.5s linear infinite;
+/* Cosmic MiniMap Styling */
+.cosmic-minimap {
+    background: rgba(28, 29, 62, 0.9) !important;
+    border: 1px solid rgba(102, 126, 234, 0.3) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Controls and Minimap */
-.react-flow__controls {
-    background-color: #1c1d3e !important;
-    border: 1px solid rgba(102, 126, 234, 0.3);
-    border-radius: 8px;
+/* React Flow Edge Styling */
+.react-flow__edge-path {
+    stroke: #667eea !important;
+    stroke-width: 2px !important;
+    filter: drop-shadow(0 0 4px rgba(102, 126, 234, 0.5));
 }
 
-.react-flow__controls-button {
-    color: #667eea !important;
-    background: transparent !important;
+.react-flow__edge.animated .react-flow__edge-path {
+    animation: dashFlow 1.5s linear infinite;
 }
 
-.react-flow__controls-button:hover {
-    background: #2d3748 !important;
+@keyframes dashFlow {
+    from {
+        stroke-dashoffset: 24;
+    }
+
+    to {
+        stroke-dashoffset: 0;
+    }
 }
 
-.react-flow__minimap {
-    background-color: #1c1d3e !important;
-    border-radius: 8px;
-    border: 1px solid rgba(102, 126, 234, 0.3);
-}
-
+/* No Skill Tree Message */
 .no-skill-tree-message {
-    display: flex;
-    justify-content: center;
+    max-width: 500px;
+    margin: 100px auto;
+    text-align: center;
+    padding: 48px 32px;
+}
+
+.no-skill-tree-message h2 {
+    font-size: 28px;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #f5576c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.no-skill-tree-message p {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    font-size: 16px;
+}
+
+.no-skill-tree-message .cosmic-button {
+    display: inline-flex;
     align-items: center;
-    height: 100%;
-    font-size: 1.2rem;
-    color: #a0a0a0;
+    gap: 8px;
+}
+
+/* Legend (optional) */
+.quest-legend {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+    padding: 16px;
+    background: rgba(28, 29, 62, 0.5);
+    border-radius: 8px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+}
+
+.legend-item.locked .legend-dot {
+    color: #4b5563;
+}
+
+.legend-item.unlocked .legend-dot {
+    color: #667eea;
+    box-shadow: 0 0 8px currentColor;
+}
+
+.legend-item.in-progress .legend-dot {
+    color: #f7d060;
+    box-shadow: 0 0 8px currentColor;
+}
+
+.legend-item.completed .legend-dot {
+    color: #10b981;
+    box-shadow: 0 0 8px currentColor;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .header-content {
+        flex-direction: column;
+    }
+
+    .progress-section {
+        width: 100%;
+    }
+
+    .progress-stats {
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .react-flow-container {
+        height: calc(100vh - 350px);
+    }
+}
+
+@media (max-width: 768px) {
+    .skill-tree-page {
+        padding: 12px;
+    }
+
+    .skill-tree-header {
+        padding: 20px;
+    }
+
+    .cosmic-panel-header {
+        font-size: 24px;
+    }
+
+    .header-description {
+        font-size: 14px;
+    }
+
+    .stat-number {
+        font-size: 28px;
+    }
+
+    .react-flow-container {
+        height: calc(100vh - 320px);
+    }
+
+    .no-skill-tree-message {
+        margin: 50px auto;
+        padding: 32px 24px;
+    }
+
+    .no-skill-tree-message h2 {
+        font-size: 22px;
+    }
+}
+
+/* React Flow Custom Styles */
+.react-flow__node {
+    cursor: pointer;
+}
+
+.react-flow__attribution {
+    display: none !important;
+}
+
+/* Add cosmic glow to selected nodes */
+.react-flow__node.selected .cosmic-quest-node {
+    box-shadow: 0 0 30px rgba(102, 126, 234, 1) !important;
 }

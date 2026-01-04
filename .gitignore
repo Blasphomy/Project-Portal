@@ -38,7 +38,7 @@ frontend.log
 *.log
 
 # Environment files (sensitive)
-*.env
+# *.env
 .env.local
 .env.*.local
 

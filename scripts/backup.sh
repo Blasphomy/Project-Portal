@@ -1,48 +1,41 @@
 #!/bin/bash
 
-# Database Backup Script for Learning Platform
-# Run this script daily via cron: 0 2 * * * /path/to/backup.sh
+# Database Backup Script
+# Backs up the single shared 'learning_db' from the postgres container
 
 # Configuration
 BACKUP_DIR="/var/backups/learning-platform"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 RETENTION_DAYS=30
+DB_CONTAINER="learning-platform-db"
+DB_NAME="learning_db"
+DB_USER="postgres"
 
-# Database credentials (use environment variables in production)
-DB_USER="${POSTGRES_USER:-postgres}"
-DB_PASSWORD="${POSTGRES_PASSWORD:-postgres}"
-
-# Create backup directory if it doesn't exist
+# Ensure backup directory exists
 mkdir -p "$BACKUP_DIR"
 
-echo "Starting backup at $(date)"
+echo "[$(date)] Starting backup..."
 
-# Backup User Database
-echo "Backing up userdb..."
-PGPASSWORD="$DB_PASSWORD" pg_dump -h localhost -p 5433 -U "$DB_USER" userdb | gzip > "$BACKUP_DIR/userdb_$TIMESTAMP.sql.gz"
-if [ $? -eq 0 ]; then
-    echo "✓ userdb backup completed"
-else
-    echo "✗ userdb backup failed"
+# Check if container is running
+if ! docker ps | grep -q "$DB_CONTAINER"; then
+    echo "❌ Database container '$DB_CONTAINER' is not running!"
     exit 1
 fi
 
-# Backup Learning Database
-echo "Backing up learningdb..."
-PGPASSWORD="$DB_PASSWORD" pg_dump -h localhost -p 5434 -U "$DB_USER" learningdb | gzip > "$BACKUP_DIR/learningdb_$TIMESTAMP.sql.gz"
-if [ $? -eq 0 ]; then
-    echo "✓ learningdb backup completed"
+# Perform backup
+# We execute pg_dump inside the container to avoid needing postgres tools on host
+docker exec -t "$DB_CONTAINER" pg_dump -U "$DB_USER" "$DB_NAME" | gzip > "$BACKUP_DIR/${DB_NAME}_$TIMESTAMP.sql.gz"
+
+if [ ${PIPESTATUS[0]} -eq 0 ]; then
+    echo "✓ Backup successful: $BACKUP_DIR/${DB_NAME}_$TIMESTAMP.sql.gz"
 else
-    echo "✗ learningdb backup failed"
+    echo "❌ Backup failed!"
+    rm -f "$BACKUP_DIR/${DB_NAME}_$TIMESTAMP.sql.gz"
     exit 1
 fi
 
-# Delete old backups
-echo "Cleaning up old backups (older than $RETENTION_DAYS days)..."
-find "$BACKUP_DIR" -name "*.sql.gz" -type f -mtime +$RETENTION_DAYS -delete
+# Cleanup old backups
+find "$BACKUP_DIR" -name "${DB_NAME}_*.sql.gz" -mtime +$RETENTION_DAYS -delete
+echo "✓ Cleaned up backups older than $RETENTION_DAYS days"
 
-echo "Backup completed successfully at $(date)"
-
-# Optional: Upload to S3 (uncomment and configure)
-# aws s3 cp "$BACKUP_DIR/userdb_$TIMESTAMP.sql.gz" s3://your-bucket/backups/
-# aws s3 cp "$BACKUP_DIR/learningdb_$TIMESTAMP.sql.gz" s3://your-bucket/backups/
+echo "[$(date)] Backup complete."

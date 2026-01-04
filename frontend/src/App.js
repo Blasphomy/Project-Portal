@@ -6,12 +6,9 @@ import LoginPage from './components/Auth/LoginPage';
 import RegisterPage from './components/Auth/RegisterPage';
 import HomePage from './components/Dashboard/HomePage';
 import ProfilePage from './components/Profile/ProfilePage';
-import LeaderboardPage from './components/Leaderboard/LeaderboardPage';
-import TopicsPage from './components/Topics/TopicsPage';
-import QuestsPage from './components/Quests/QuestsPage';
-import QuestDetailPage from './components/Quest/QuestDetailPage';
 import CustomPathPage from './components/CustomPath/CustomPathPage';
-import SkillTreePage from './components/SkillTree/SkillTreePage'; // Import the new component
+import SkillTreePage from './components/SkillTree/SkillTreePage';
+import AiAssistant from './components/AI/AiAssistant';
 import './App.css';
 
 function App() {
@@ -24,7 +21,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 
-            {/* Protected routes */}
+            {/* Protected routes - AI Game Master */}
             <Route
               path="/dashboard"
               element={
@@ -44,42 +41,6 @@ function App() {
             />
 
             <Route
-              path="/leaderboard"
-              element={
-                <ProtectedRoute>
-                  <LeaderboardPage />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/topics"
-              element={
-                <ProtectedRoute>
-                  <TopicsPage />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/topics/:topicId/quests"
-              element={
-                <ProtectedRoute>
-                  <QuestsPage />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/quests/:questId"
-              element={
-                <ProtectedRoute>
-                  <QuestDetailPage />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
               path="/custom-path"
               element={
                 <ProtectedRoute>
@@ -88,7 +49,6 @@ function App() {
               }
             />
 
-            {/* Add the new route for the skill tree page */}
             <Route
               path="/skill-tree"
               element={
@@ -102,6 +62,9 @@ function App() {
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
+
+          {/* AI Assistant - available on all pages */}
+          <AiAssistant />
         </div>
       </Router>
     </AuthProvider>

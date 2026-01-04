@@ -40,8 +40,8 @@
 
         <dependency>
             <groupId>com.cohere</groupId>
-            <artifactId>cohere-java-sdk</artifactId>
-            <version>1.2.0</version>
+            <artifactId>cohere-java</artifactId>
+            <version>1.9.3</version>
         </dependency>
 
         <dependency>
@@ -81,4 +81,12 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -23,13 +23,13 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     private String id;
-    @Column(value = "first_name")
-    private String firstName;
-    @Column(value = "last_name")
-    private String lastName;
+    @Column(value = "username")
+    private String username;
+    @Column(value = "full_name")
+    private String fullName;
     @Column(value = "email")
     private String email;
-    @Column(value = "password")
+    @Column(value = "password_hash")
     private String password;
     @Column(value = "avatar_url")
     private String avatarUrl;
@@ -51,6 +51,7 @@ public class User implements UserDetails {
     @Column(value = "last_login_at")
     private LocalDateTime lastLoginAt;
 
+    @org.springframework.data.annotation.Transient
     private Role role;
 
     public enum Role {

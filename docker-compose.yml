@@ -1,216 +1,167 @@
 version: '3.8'
 
 services:
-  # PostgreSQL with pgvector extension
+  # PostgreSQL Database (single shared database)
   postgres:
-    image: ankane/pgvector:latest
+    image: postgres:16-alpine
     container_name: learning-platform-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: ${POSTGRES_DB:-learning_db}
     ports:
-      - "5432:5432"
+      - "5435:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - learning-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # Redis for caching and session storage
+  # Redis (for caching and sessions)
   redis:
     image: redis:7-alpine
     container_name: learning-platform-redis
-    command: redis-server --appendonly yes
     ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
+      - "6380:6379"
     networks:
       - learning-network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
-      timeout: 3s
+      timeout: 5s
       retries: 5
 
-  # Prometheus for metrics collection
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: learning-platform-prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--web.enable-lifecycle'
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./infrastructure/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    networks:
-      - learning-network
-    depends_on:
-      - backend
-
-  # Grafana for visualization
-  grafana:
-    image: grafana/grafana:latest
-    container_name: learning-platform-grafana
-    environment:
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin123}
-      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource
-    ports:
-      - "3001:3000"
-    volumes:
-      - ./infrastructure/monitoring/grafana/provisioning:/etc/grafana/provisioning
-      - ./infrastructure/monitoring/grafana/dashboards:/var/lib/grafana/dashboards
-      - grafana_data:/var/lib/grafana
-    networks:
-      - learning-network
-    depends_on:
-      - prometheus
-
-  # Elasticsearch for log storage
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.3
-    container_name: learning-platform-elasticsearch
-    environment:
-      - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - xpack.security.enabled=false
-    ports:
-      - "9200:9200"
-    volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
-    networks:
-      - learning-network
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  # Logstash for log processing
-  logstash:
-    image: docker.elastic.co/logstash/logstash:8.11.3
-    container_name: learning-platform-logstash
-    ports:
-      - "5000:5000/tcp"
-      - "5000:5000/udp"
-      - "9600:9600"
-    volumes:
-      - ./infrastructure/monitoring/elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-      - ./infrastructure/monitoring/elk/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
-    networks:
-      - learning-network
-    depends_on:
-      - elasticsearch
-    environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-
-  # Kibana for log visualization
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.11.3
-    container_name: learning-platform-kibana
-    ports:
-      - "5601:5601"
-    environment:
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
-    networks:
-      - learning-network
-    depends_on:
-      - elasticsearch
-
-  # Zipkin for distributed tracing
-  zipkin:
-    image: openzipkin/zipkin:latest
-    container_name: learning-platform-zipkin
-    ports:
-      - "9411:9411"
-    networks:
-      - learning-network
-
-  # PgAdmin for database management (optional)
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: learning-platform-pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@learning-platform.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "8081:80"
-    networks:
-      - learning-network
-    depends_on:
-      - postgres
-
-  # Backend Application (will build later)
-  backend:
+  # Learning Service (Port 8081) - Owns database schema
+  learning-service:
     build:
       context: .
-      dockerfile: infrastructure/docker/Dockerfile.backend
-    container_name: learning-platform-backend
+      dockerfile: infrastructure/docker/Dockerfile.learning-service
+    container_name: learning-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_R2DBC_URL: r2dbc:postgresql://postgres:5432/learning_db
-      SPRING_R2DBC_USERNAME: ${POSTGRES_USER:-postgres}
-      SPRING_R2DBC_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      SPRING_FLYWAY_URL: jdbc:postgresql://postgres:5432/learning_db
-      SPRING_REDIS_HOST: redis
-      SPRING_REDIS_PORT: 6379
-      AI_API_KEY: ${AI_API_KEY}
-      PINECONE_API_KEY: ${PINECONE_API_KEY}
-      PINECONE_ENVIRONMENT: ${PINECONE_ENVIRONMENT}
-      JWT_SECRET: ${JWT_SECRET}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
-      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
+      SERVER_PORT: 8080
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
-      - "8080:8080"
+      - "8081:8080"
     networks:
       - learning-network
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
-        condition: service_healthy
-    #volumes:
-    #  - ./backend:/app
-    #  - ./logs:/app/logs
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
-  # Frontend (Next.js)
-  frontend:
+  # User Service (Port 8083)
+  user-service:
     build:
-      context: ./frontend-new
-      dockerfile: ../infrastructure/docker/Dockerfile.frontend
-    container_name: learning-platform-frontend
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.user-service
+    container_name: user-service
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8080
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      JWT_SECRET: ${JWT_SECRET}
     ports:
-      - "3000:3000"
+      - "8083:8080"
     networks:
       - learning-network
     depends_on:
-      - backend
-    #volumes:
-    #  - ./frontend-new:/app
-    #  - /app/node_modules
-    #  - /app/.next
+      learning-service:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # AI Service (Port 8082)
+  ai-service:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.ai-service
+    container_name: ai-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      PINECONE_API_KEY: ${PINECONE_API_KEY:-}
+      PINECONE_ENVIRONMENT: ${PINECONE_ENVIRONMENT:-}
+      COHERE_API_KEY: ${COHERE_API_KEY:-}
+    ports:
+      - "8082:8080"
+    networks:
+      - learning-network
+    depends_on:
+      - learning-service
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # API Gateway (Port 8080)
+  api-gateway:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.api-gateway
+    container_name: api-gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+    ports:
+      - "8080:8080"
+    networks:
+      - learning-network
+    depends_on:
+      - learning-service
+      - user-service
+      - ai-service
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend (Port 3000)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    environment:
+      REACT_APP_API_URL: http://localhost:8080
+    ports:
+      - "3000:80"
+    networks:
+      - learning-network
+    depends_on:
+      - api-gateway
 
 volumes:
   postgres_data:
-  redis_data:
-  prometheus_data:
-  grafana_data:
-  elasticsearch_data:
+    driver: local
 
 networks:
   learning-network:

@@ -7,5 +7,6 @@
 
     <!-- Include all changelogs in order -->
     <include file="db/changelog/001-user-tables.xml"/>
+    <include file="db/changelog/20260102-auto-ids.xml"/>
     
 </databaseChangeLog>

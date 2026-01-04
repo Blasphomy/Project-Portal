@@ -36,6 +36,8 @@
         <module>backend/ai-service</module>
         <module>backend/user-service</module>
         <module>backend/api-gateway</module>
+        <!-- user-progress-service REMOVED - functionality in learning-service -->
+        <!-- database REMOVED - Liquibase in learning-service -->
     </modules>
 
     <dependencyManagement>

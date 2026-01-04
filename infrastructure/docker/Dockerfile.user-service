@@ -1,0 +1,52 @@
+# Multi-stage Dockerfile for User Service
+
+FROM eclipse-temurin:21-jdk-alpine AS build
+WORKDIR /workspace
+
+# Copy Maven wrapper and parent POM
+COPY mvnw mvnw.cmd ./
+COPY .mvn .mvn
+COPY pom.xml ./
+
+# Copy all module POMs
+COPY backend/common/pom.xml backend/common/
+COPY backend/learning-service/pom.xml backend/learning-service/
+COPY backend/ai-service/pom.xml backend/ai-service/
+COPY backend/user-service/pom.xml backend/user-service/
+COPY backend/api-gateway/pom.xml backend/api-gateway/
+
+# Download dependencies
+RUN ./mvnw dependency:go-offline -B || true
+
+# Copy common module source
+COPY backend/common backend/common
+
+# Copy user-service source
+COPY backend/user-service backend/user-service
+
+# Build only user-service module  
+RUN ./mvnw clean package -pl backend/user-service -am -DskipTests
+
+# Runtime stage
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
+
+# Copy JAR from build stage
+COPY --from=build /workspace/backend/user-service/target/*.jar app.jar
+
+# Expose internal container port
+EXPOSE 8080
+
+# JVM options
+ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom"
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
+
+# Run application
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

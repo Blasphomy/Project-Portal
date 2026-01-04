@@ -1,0 +1,215 @@
+/* Cosmic Quest Node Styles */
+
+.cosmic-quest-node {
+    padding: 16px 24px;
+    border-radius: 12px;
+    border: 2px solid;
+    background: rgba(28, 29, 62, 0.9);
+    color: white;
+    font-weight: 600;
+    min-width: 200px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Status-based styling */
+.cosmic-quest-node.locked {
+    border-color: #4b5563;
+    color: #9ca3af;
+    opacity: 0.6;
+    box-shadow: 0 0 10px rgba(75, 85, 99, 0.3);
+    cursor: not-allowed;
+}
+
+.cosmic-quest-node.unlocked {
+    border-color: #667eea;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.cosmic-quest-node.in-progress {
+    border-color: #f7d060;
+    box-shadow: 0 0 25px rgba(247, 208, 96, 0.7);
+    background: rgba(28, 29, 62, 0.95);
+}
+
+.cosmic-quest-node.completed {
+    border-color: #10b981;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(28, 29, 62, 0.9));
+}
+
+/* Hover effects */
+.cosmic-quest-node.unlocked:hover,
+.cosmic-quest-node.in-progress:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 30px rgba(102, 126, 234, 0.8);
+}
+
+.cosmic-quest-node.completed:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.8);
+}
+
+/* Pulse animation for unlocked quests */
+@keyframes pulseGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 15px rgba(102, 126, 234, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(102, 126, 234, 0.8);
+    }
+}
+
+/* Status icon */
+.status-icon {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(10, 11, 42, 0.9);
+    border: 2px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    z-index: 10;
+}
+
+.cosmic-quest-node.locked .status-icon {
+    border-color: #4b5563;
+}
+
+.cosmic-quest-node.unlocked .status-icon {
+    border-color: #667eea;
+    animation: rotate 3s linear infinite;
+}
+
+.cosmic-quest-node.in-progress .status-icon {
+    border-color: #f7d060;
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.cosmic-quest-node.completed .status-icon {
+    border-color: #10b981;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Node content */
+.node-content {
+    position: relative;
+    z-index: 1;
+}
+
+.node-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+/* Category badge */
+.node-content .cosmic-badge {
+    font-size: 10px;
+    padding: 4px 8px;
+    margin-top: 4px;
+}
+
+/* Hover tooltip */
+.node-tooltip {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10, 11, 42, 0.95);
+    border: 1px solid rgba(102, 126, 234, 0.5);
+    border-radius: 8px;
+    padding: 12px;
+    min-width: 250px;
+    max-width: 350px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+
+.node-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: rgba(102, 126, 234, 0.5);
+}
+
+.cosmic-quest-node:hover .node-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.node-tooltip p {
+    margin: 0;
+    font-size: 13px;
+    color: #e0e0f0;
+    line-height: 1.5;
+    font-weight: 400;
+}
+
+/* React Flow handles */
+.node-handle {
+    width: 12px;
+    height: 12px;
+    background: currentColor;
+    border: 2px solid rgba(10, 11, 42, 1);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.cosmic-quest-node:hover .node-handle {
+    opacity: 1;
+}
+
+.node-handle-target {
+    top: -6px;
+}
+
+.node-handle-source {
+    bottom: -6px;
+}
+
+/* Locked state - hide handles */
+.cosmic-quest-node.locked .node-handle {
+    display: none;
+}

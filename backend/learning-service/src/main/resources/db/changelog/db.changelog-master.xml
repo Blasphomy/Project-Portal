@@ -12,5 +12,6 @@
     <include file="db/changelog/003-auth-tables.xml"/>
     <include file="db/changelog/004-enhanced-content-metadata.xml"/>
     <include file="db/changelog/005-skill-tree-tables.xml"/>
+    <include file="db/changelog/006-auto-ids.xml"/>
     
 </databaseChangeLog>

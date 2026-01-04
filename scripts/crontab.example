@@ -1,19 +1,15 @@
 # Crontab Configuration for Learning Platform
 # Install: crontab -e
-# Then paste these lines
+# Then paste these lines (adjust paths as needed)
 
 # Automated Database Backups - Every day at 2 AM
 0 2 * * * /path/to/Project-Portal/scripts/backup.sh >> /var/log/learning-platform/backup.log 2>&1
 
 # Health Checks - Every 5 minutes
-*/5 * * * * /path/to/Project-Portal/scripts/health-check.sh
-
-# Cleanup old logs - Every Sunday at 3 AM
-0 3 * * 0 find /var/log/learning-platform -name "*.log" -type f -mtime +30 -delete
+*/5 * * * * /path/to/Project-Portal/scripts/health-check.sh >> /var/log/learning-platform/health.log 2>&1
 
 # Database vacuum - Every Sunday at 4 AM
-0 4 * * 0 docker exec learning-platform-user-db vacuumdb -U postgres -d userdb -z
-0 4 * * 0 docker exec learning-platform-learning-db vacuumdb -U postgres -d learningdb -z
+0 4 * * 0 docker exec learning-platform-db vacuumdb -U postgres -d learning_db -z
 
-# Restart services weekly - Every Monday at 3 AM (optional, for memory cleanup)
-# 0 3 * * 1 cd /path/to/Project-Portal && docker-compose -f docker-compose.simple.yml restart
+# Restart services weekly - Every Monday at 3 AM (optional)
+# 0 3 * * 1 cd /path/to/Project-Portal && docker-compose restart

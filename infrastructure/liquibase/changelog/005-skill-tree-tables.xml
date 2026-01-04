@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Changeset 005-1: Create skill_trees table -->
+    <changeSet id="005-1" author="system">
+        <comment>Create skill_trees table for personalized learning paths</comment>
+        <createTable tableName="skill_trees">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="user_goal" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(50)" defaultValue="active">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+
+        <createIndex tableName="skill_trees" indexName="idx_skill_tree_user_id">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createIndex tableName="skill_trees" indexName="idx_skill_tree_status">
+            <column name="status"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="skill_trees"/>
+        </rollback>
+    </changeSet>
+
+    <!-- Changeset 005-2: Create quest_nodes table -->
+    <changeSet id="005-2" author="system">
+        <comment>Create quest_nodes table for skill tree graph nodes</comment>
+        <createTable tableName="quest_nodes">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="skill_tree_id" type="UUID">
+                <constraints nullable="false" 
+                            foreignKeyName="fk_quest_node_skill_tree" 
+                            references="skill_trees(id)" 
+                            deleteCascade="true"/>
+            </column>
+            <column name="quest_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="category" type="VARCHAR(100)"/>
+            <column name="status" type="VARCHAR(50)" defaultValue="locked">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position_x" type="FLOAT" defaultValue="0"/>
+            <column name="position_y" type="FLOAT" defaultValue="0"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+
+        <createIndex tableName="quest_nodes" indexName="idx_quest_node_skill_tree_id">
+            <column name="skill_tree_id"/>
+        </createIndex>
+
+        <createIndex tableName="quest_nodes" indexName="idx_quest_node_status">
+            <column name="status"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="quest_nodes"/>
+        </rollback>
+    </changeSet>
+
+    <!-- Changeset 005-3: Create quest_dependencies table -->
+    <changeSet id="005-3" author="system">
+        <comment>Create quest_dependencies table for skill tree graph edges</comment>
+        <createTable tableName="quest_dependencies">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="skill_tree_id" type="UUID">
+                <constraints nullable="false" 
+                            foreignKeyName="fk_quest_dep_skill_tree" 
+                            references="skill_trees(id)" 
+                            deleteCascade="true"/>
+            </column>
+            <column name="source_quest_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="target_quest_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+
+        <createIndex tableName="quest_dependencies" indexName="idx_quest_dep_skill_tree_id">
+            <column name="skill_tree_id"/>
+        </createIndex>
+
+        <createIndex tableName="quest_dependencies" indexName="idx_quest_dep_target">
+            <column name="target_quest_id"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="quest_dependencies"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

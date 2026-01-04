@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Table("skill_trees")
@@ -23,5 +24,16 @@ public class SkillTree {
     private String title;
 
     private String description;
+
+    @Column("user_goal")
+    private String userGoal;
+
+    private String status; // 'active', 'completed', 'archived'
+
+    @Column("created_at")
+    private LocalDateTime createdAt;
+
+    @Column("updated_at")
+    private LocalDateTime updatedAt;
 
 }

@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Table("quest_dependencies")
@@ -15,7 +16,10 @@ import java.util.UUID;
 public class QuestDependency {
 
     @Id
-    private Long id;
+    private UUID id;
+
+    @Column("skill_tree_id")
+    private UUID skillTreeId;
 
     @Column("source_quest_id")
     private String sourceQuestId;
@@ -23,6 +27,6 @@ public class QuestDependency {
     @Column("target_quest_id")
     private String targetQuestId;
 
-    @Column("skill_tree_id")
-    private UUID skillTreeId;
+    @Column("created_at")
+    private LocalDateTime createdAt;
 }

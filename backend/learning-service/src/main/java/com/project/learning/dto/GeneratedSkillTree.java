@@ -5,6 +5,7 @@ import java.util.List;
 public class GeneratedSkillTree {
     private String title;
     private String description;
+    private String userGoal; // Store the original user goal
     private List<Quest> nodes;
     private List<Dependency> edges;
 
@@ -23,6 +24,14 @@ public class GeneratedSkillTree {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getUserGoal() {
+        return userGoal;
+    }
+
+    public void setUserGoal(String userGoal) {
+        this.userGoal = userGoal;
     }
 
     public List<Quest> getNodes() {

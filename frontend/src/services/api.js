@@ -20,22 +20,40 @@ class ApiClient {
       ...options.headers,
     };
 
+    console.log('[API] Making request to:', url);
+    console.log('[API] Request options:', options);
+
     try {
       const response = await fetch(url, {
         ...options,
         headers,
       });
 
+      console.log('[API] Response status:', response.status, response.statusText);
+      console.log('[API] Response ok:', response.ok);
+
       const data = await response.json();
+      console.log('[API] Parsed data:', data);
 
       if (!response.ok) {
-        throw new Error(data.message || `HTTP ${response.status}: ${response.statusText}`);
+        console.log('[API] Response NOT OK - returning error');
+        return {
+          success: false,
+          error: data.message || `HTTP ${response.status}: ${response.statusText}`
+        };
       }
 
-      return data;
+      console.log('[API] Response OK - returning success');
+      return {
+        success: true,
+        data: data
+      };
     } catch (error) {
-      console.error('API Error:', error);
-      throw error;
+      console.error('[ API] Request exception:', error);
+      return {
+        success: false,
+        error: error.message
+      };
     }
   }
 

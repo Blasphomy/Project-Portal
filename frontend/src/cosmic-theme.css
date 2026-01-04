@@ -1,0 +1,361 @@
+/* ========== Cosmic Theme - Global Styles ========== */
+
+:root {
+  /* Cosmic Color Palette */
+  --color-space-bg: #0a0b2a;
+  --color-deep-purple: #1c1d3e;
+  --color-nebula-purple: #667eea;
+  --color-nebula-pink: #f5576c;
+  --color-star-yellow: #f7d060;
+  --color-cosmic-blue: #4a90e2;
+  --color-success-green: #10b981;
+  --color-locked-gray: #4b5563;
+  
+  /* Glow effects */
+  --glow-purple: 0 0 15px rgba(102, 126, 234, 0.4);
+  --glow-purple-intense: 0 0 25px rgba(102, 126, 234, 0.7);
+  --glow-pink: 0 0 20px rgba(245, 87, 108, 0.6);
+  --glow-yellow: 0 0 25px rgba(247, 208, 96, 0.5);
+  --glow-green: 0 0 20px rgba(16, 185, 129, 0.5);
+  
+  /* Gradients */
+  --gradient-purple-pink: linear-gradient(135deg, var(--color-nebula-purple) 0%, var(--color-nebula-pink) 100%);
+  --gradient-cosmic: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-galaxy: radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.3) 0%, transparent 70%);
+}
+
+/* ========== Animated Starfield Background ========== */
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.constellation-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-space-bg);
+  overflow: hidden;
+  z-index: -1;
+}
+
+.constellation-bg::before {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  box-shadow: 
+    100px 200px white,
+    200px 400px white,
+    300px 100px white,
+    400px 300px white,
+    500px 500px white,
+    600px 200px white,
+    700px 400px white,
+    800px 100px white,
+    900px 300px white,
+    1000px 200px white,
+    150px 350px rgba(255, 255, 255, 0.8),
+    350px 150px rgba(255, 255, 255, 0.6),
+    550px 450px rgba(255, 255, 255, 0.7),
+    750px 250px rgba(255, 255, 255, 0.5),
+    950px 350px rgba(255, 255, 255, 0.9);
+  animation: twinkle 3s infinite;
+}
+
+/* ========== Cosmic Panels ========== */
+
+.cosmic-panel {
+  background: rgba(28, 29, 62, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--glow-purple);
+  transition: all 0.3s ease;
+}
+
+.cosmic-panel:hover {
+  border-color: rgba(102, 126, 234, 0.6);
+  box-shadow: var(--glow-purple-intense);
+  transform: translateY(-2px);
+}
+
+.cosmic-panel-header {
+  font-size: 24px;
+  font-weight: 700;
+  background: var(--gradient-purple-pink);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 16px;
+}
+
+/* ========== Cosmic Buttons ========== */
+
+.cosmic-button {
+  background: var(--gradient-cosmic);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--glow-purple);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.cosmic-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.cosmic-button:hover::before {
+  left: 100%;
+}
+
+.cosmic-button:hover {
+  box-shadow: var(--glow-purple-intense);
+  transform: translateY(-2px);
+}
+
+.cosmic-button:active {
+  transform: translateY(0);
+}
+
+.cosmic-button-secondary {
+  background: rgba(102, 126, 234, 0.2);
+  border: 2px solid var(--color-nebula-purple);
+  color: var(--color-nebula-purple);
+}
+
+.cosmic-button-secondary:hover {
+  background: rgba(102, 126, 234, 0.3);
+}
+
+.cosmic-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ========== Cosmic Cards ========== */
+
+.cosmic-card {
+  background: rgba(28, 29, 62, 0.8);
+  border: 1px solid rgba(102, 126, 234, 0.4);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--glow-purple);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.cosmic-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: var(--gradient-galaxy);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.cosmic-card:hover::before {
+  opacity: 1;
+}
+
+.cosmic-card:hover {
+  border-color: rgba(102, 126, 234, 0.7);
+  box-shadow: var(--glow-purple-intense);
+  transform: scale(1.02);
+}
+
+.cosmic-card-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* ========== Cosmic Input Fields ========== */
+
+.cosmic-input {
+  width: 100%;
+  background: rgba(10, 11, 42, 0.6);
+  border: 2px solid rgba(102, 126, 234, 0.4);
+  border-radius: 8px;
+  padding: 14px;
+  color: #e0e0f0;
+  font-size: 16px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.cosmic-input:focus {
+  outline: none;
+  border-color: var(--color-nebula-purple);
+  box-shadow: var(--glow-purple);
+}
+
+.cosmic-input::placeholder {
+  color: rgba(224, 224, 240, 0.5);
+}
+
+.cosmic-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* ========== Cosmic Quest Nodes (for React Flow) ========== */
+
+.cosmic-quest-node {
+  padding: 16px 24px;
+  border-radius: 12px;
+  border: 2px solid;
+  background: rgba(28, 29, 62, 0.9);
+  color: white;
+  font-weight: 600;
+  min-width: 180px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.cosmic-quest-node.locked {
+  border-color: var(--color-locked-gray);
+  color: var(--color-locked-gray);
+  opacity: 0.5;
+  box-shadow: 0 0 10px rgba(75, 85, 99, 0.3);
+}
+
+.cosmic-quest-node.unlocked {
+  border-color: var(--color-nebula-purple);
+  box-shadow: var(--glow-purple);
+  animation: pulse 2s infinite;
+}
+
+.cosmic-quest-node.in-progress {
+  border-color: var(--color-star-yellow);
+  box-shadow: var(--glow-yellow);
+}
+
+.cosmic-quest-node.completed {
+  border-color: var(--color-success-green);
+  box-shadow: var(--glow-green);
+}
+
+.cosmic-quest-node:hover:not(.locked) {
+  transform: scale(1.05);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(102, 126, 234, 0.8);
+  }
+}
+
+/* ========== Loading Spinner ========== */
+
+.cosmic-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(102, 126, 234, 0.2);
+  border-top-color: var(--color-nebula-purple);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 40px auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========== Cosmic Badges ========== */
+
+.cosmic-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cosmic-badge.fundamentals {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.cosmic-badge.backend {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.cosmic-badge.frontend {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+}
+
+.cosmic-badge.database {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  color: white;
+}
+
+.cosmic-badge.security {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  color: white;
+}
+
+.cosmic-badge.deployment {
+  background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+  color: white;
+}
+
+/* ========== Utility Classes ========== */
+
+.text-glow {
+  text-shadow: 0 0 10px rgba(102, 126, 234, 0.6);
+}
+
+.glow-on-hover {
+  transition: all 0.3s ease;
+}
+
+.glow-on-hover:hover {
+  filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.7));
+}

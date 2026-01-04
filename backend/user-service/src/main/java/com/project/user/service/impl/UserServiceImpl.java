@@ -20,4 +20,10 @@ public class UserServiceImpl implements UserService {
                 .switchIfEmpty(Mono.error(new UsernameNotFoundException("User not found")))
                 .map(userDetails -> (UserDetails) userDetails);
     }
+
+    @Override
+    public Mono<UserDetails> findByUsername(String username) {
+        return userRepository.findByEmail(username)
+                .map(user -> (UserDetails) user);
+    }
 }

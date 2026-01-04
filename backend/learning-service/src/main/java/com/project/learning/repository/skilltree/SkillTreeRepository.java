@@ -19,4 +19,13 @@ public interface SkillTreeRepository extends R2dbcRepository<SkillTree, UUID> {
      * @return A Mono containing the user's skill tree if it exists.
      */
     Mono<SkillTree> findByUserId(String userId);
+
+    /**
+     * Finds a skill tree by user ID and status (e.g., 'active')
+     *
+     * @param userId The ID of the user.
+     * @param status The status to filter by.
+     * @return A Mono containing the user's skill tree with the specified status.
+     */
+    Mono<SkillTree> findByUserIdAndStatus(String userId, String status);
 }
