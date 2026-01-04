@@ -1,26 +1,6 @@
 version: '3.8'
 
 services:
-  # PostgreSQL Database (single shared database)
-  postgres:
-    image: postgres:16-alpine
-    container_name: learning-platform-db
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-learning_db}
-    ports:
-      - "5435:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - learning-network
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   # Redis (for caching and sessions)
   redis:
     image: redis:7-alpine
@@ -46,14 +26,13 @@ services:
       SERVER_PORT: 8080
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      DATABASE_URL: ${DATABASE_URL}
     ports:
       - "8081:8080"
     networks:
       - learning-network
     depends_on:
-      postgres:
+      redis:
         condition: service_healthy
     healthcheck:
       test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1" ]
@@ -73,8 +52,7 @@ services:
       SERVER_PORT: 8080
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      DATABASE_URL: ${DATABASE_URL}
       JWT_SECRET: ${JWT_SECRET}
     ports:
       - "8083:8080"
@@ -143,25 +121,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-
-  # Frontend (Port 3000)
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: frontend
-    environment:
-      REACT_APP_API_URL: http://localhost:8080
-    ports:
-      - "3000:80"
-    networks:
-      - learning-network
-    depends_on:
-      - api-gateway
-
-volumes:
-  postgres_data:
-    driver: local
 
 networks:
   learning-network:
