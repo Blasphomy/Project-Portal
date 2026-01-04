@@ -27,6 +27,7 @@ services:
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       DATABASE_URL: ${DATABASE_URL}
+      LIQUIBASE_URL: ${LIQUIBASE_URL:-jdbc:postgresql://localhost:5432/learning_db}
     ports:
       - "8081:8080"
     networks:
