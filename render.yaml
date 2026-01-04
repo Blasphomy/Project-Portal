@@ -1,0 +1,107 @@
+services:
+  # PostgreSQL Database (Supabase will replace this)
+  # We'll use external Supabase PostgreSQL instead
+  
+  # Learning Service
+  - type: web
+    name: learning-service
+    env: docker
+    dockerfilePath: ./infrastructure/docker/Dockerfile.learning-service
+    dockerContext: .
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      - key: SERVER_PORT
+        value: 8080
+      - key: DATABASE_URL
+        fromDatabase:
+          name: project-portal-db
+          property: connectionString
+      - key: SPRING_DATA_REDIS_HOST
+        fromService:
+          name: redis
+          type: redis
+          property: host
+      - key: SPRING_DATA_REDIS_PORT
+        fromService:
+          name: redis
+          type: redis
+          property: port
+    healthCheckPath: /actuator/health
+    
+  # User Service
+  - type: web
+    name: user-service
+    env: docker
+    dockerfilePath: ./infrastructure/docker/Dockerfile.user-service
+    dockerContext: .
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      - key: SERVER_PORT
+        value: 8080
+      - key: DATABASE_URL
+        fromDatabase:
+          name: project-portal-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SPRING_DATA_REDIS_HOST
+        fromService:
+          name: redis
+          type: redis
+          property: host
+    healthCheckPath: /actuator/health
+    
+  # AI Service
+  - type: web
+    name: ai-service
+    env: docker
+    dockerfilePath: ./infrastructure/docker/Dockerfile.ai-service
+    dockerContext: .
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      - key: SERVER_PORT
+        value: 8080
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SPRING_DATA_REDIS_HOST
+        fromService:
+          name: redis
+          type: redis
+          property: host
+    healthCheckPath: /actuator/health
+    
+  # API Gateway
+  - type: web
+    name: api-gateway
+    env: docker
+    dockerfilePath: ./infrastructure/docker/Dockerfile.api-gateway
+    dockerContext: .
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      - key: SERVER_PORT
+        value: 8080
+      - key: LEARNING_SERVICE_URL
+        fromService:
+          name: learning-service
+          type: web
+          property: host
+      - key: USER_SERVICE_URL
+        fromService:
+          name: user-service
+          type: web
+          property: host
+      - key: AI_SERVICE_URL
+        fromService:
+          name: ai-service
+          type: web
+          property: host
+    healthCheckPath: /actuator/health
+
+databases:
+  - name: project-portal-db
+    databaseName: learning_db
+    user: postgres
