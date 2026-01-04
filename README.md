@@ -1,165 +1,192 @@
-# Learning Platform - Modern AI-Powered Tutorial Platform
+# 🚀 AI-Powered Learning Platform
 
-> **Status:** 🏗️ **Under Active Development** - Core Infrastructure Optimized & Cleaned
+An intelligent learning platform that generates personalized skill trees using AI, tracks progress, and provides adaptive learning paths.
 
-A production-ready, AI-powered programming tutorial platform built with Spring Boot WebFlux, Google Gemini AI, and modern microservices architecture.
+## 🌟 Features
 
-## 🎯 Project Vision
-
-Transform traditional programming tutorials into an **interactive, AI-enhanced learning experience** with:
-- Real-time AI-generated study materials
-- Intelligent code hints and reviews
-- Gamification (XP, badges, progress tracking)
-- Modular architecture ready for scale
-
----
+- ✨ **AI-Generated Skill Trees**: Personalized learning paths created by Gemini AI
+- 🎯 **Interactive Quest System**: Gamified learning with quest tracking
+- 📊 **Progress Tracking**: Visual progress indicators and completion tracking
+- 🎨 **Beautiful UI**: Modern, responsive design with cosmic theme
+- 🔐 **User Authentication**: Secure JWT-based authentication
+- 💾 **Persistent Storage**: PostgreSQL database with reactive R2DBC
 
 ## 🏗️ Architecture
 
-### Streamlined Microservices Structure
-```
-Project-Portal/
-├── backend/
-│   ├── common/              # Shared utilities & exceptions
-│   ├── learning-service/    # Core domain & SCHEMA OWNER (Liquibase)
-│   ├── ai-service/          # AI integration (Gemini)
-│   ├── user-service/        # Auth & user management
-│   └── api-gateway/         # Entry point & routing
-├── frontend/                # React/Next.js app
-├── infrastructure/
-│   ├── docker/              # Optimized multi-stage Dockerfiles
-│   │   ├── Dockerfile.learning-service
-│   │   ├── Dockerfile.user-service
-│   │   ├── Dockerfile.ai-service
-│   │   └── Dockerfile.api-gateway
-│   └── monitoring/          # Optional Prometheus/Grafana configs
-├── scripts/                 # Deploy, backup, restore, health-check
-└── docker-compose.yml       # Production-ready orchestration
-```
+**Microservices:**
+- `api-gateway` - Routes requests to appropriate services (Port 8080)
+- `learning-service` - Manages skill trees, quests, and progress (Port 8081)
+- `user-service` - Handles authentication and user management (Port 8083)
+- `ai-service` - Generates skill trees using Gemini AI (Port 8082)
 
-### Technology Stack
-
-**Backend:**
-- **Spring Boot 3.2+ WebFlux** (Reactive)
-- **R2DBC PostgreSQL** (Reactive database)
-- **Liquibase** (Database migrations - managed by `learning-service`)
-- **Spring Cloud Gateway** (Routing)
-- **Java 21** (LTS)
-
-**AI & Data:**
-- **Google Gemini 1.5 Flash** (AI Model)
-- **PostgreSQL 16** (Single shared database for simplicity & consistency)
-- **pgvector** (Vector search support)
-
-**Infrastructure:**
-- **Docker & Docker Compose**
-- **Maven** (Multi-module build)
-
----
+**Tech Stack:**
+- **Backend**: Spring Boot 3.x, WebFlux, R2DBC
+- **Frontend**: React 18, React Flow, Firebase Hosting
+- **Database**: PostgreSQL (Supabase)
+- **Cache**: Redis
+- **AI**: Google Gemini API
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Docker Desktop
-- Java 21 Use `mvnw` (wrapper provided)
 
-### 1. Setup Environment
-```bash
-# Copy template
-cp .env.example .env
+- Docker & Docker Compose
+- Git
+- (Optional) Gemini API Key from [Google AI Studio](https://makersuite.google.com/app/apikey)
 
-# Edit .env with your actual values (REQUIRED)
-# - GEMINI_API_KEY
-# - JWT_SECRET
-# - POSTGRES_PASSWORD
-nano .env
-```
+### 1. Clone the Repository
 
-### 2. Start Everything (Docker)
-```bash
-# Build and start all services
-docker-compose up -d --build
+\`\`\`bash
+git clone https://github.com/Blasphomy/Project-Portal.git
+cd Project-Portal
+git checkout third
+\`\`\`
 
-# Check status
-docker-compose ps
-```
+### 2. Configure Environment Variables
 
-### 3. Access Services
-- **Frontend:** http://localhost:3000
-- **API Gateway:** http://localhost:8080
-- **Learning Service:** http://localhost:8081
-- **AI Service:** http://localhost:8082
-- **User Service:** http://localhost:8083
+Create a \`.env\` file in the project root:
 
----
+\`\`\`env
+# Database Configuration (Use Supabase or local PostgreSQL)
+DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@db.xxx.supabase.co:5432/postgres
 
-## 💻 Local Development
+# Optional: Gemini API Key (Leave empty to use hardcoded test data)
+GEMINI_API_KEY=your_gemini_api_key_here
 
-Run services individually with the `local` profile (connects to `localhost` database):
+# JWT Secret (Auto-generated if not provided)
+JWT_SECRET=your_jwt_secret_here
+\`\`\`
 
-### 1. Start Database
-```bash
-docker-compose up -d postgres
-```
+### 3. Start the Services
 
-### 2. Run Services (Terminal 1-4)
-```bash
-# Learning Service (Starts first - owns schema)
-cd backend/learning-service
-../../mvnw spring-boot:run -Dspring-boot.run.profiles=local
+\`\`\`bash
+docker-compose up -d
+\`\`\`
 
-# ... User Service, AI Service, API Gateway (in new terminals)
-../../mvnw spring-boot:run -Dspring-boot.run.profiles=local
-```
+This will start:
+- API Gateway: http://localhost:8080
+- Learning Service: http://localhost:8081
+- User Service: http://localhost:8083
+- AI Service: http://localhost:8082
+- Redis: localhost:6380
 
----
+### 4. Access the Application
 
-## 🛠️ Maintenance Scripts
+**Frontend (Live on Firebase):**
+https://project-portal-9a6df.web.app
 
-Located in `scripts/`:
+**Local Development:**
+The frontend is already deployed to Firebase and configured to work with \`localhost:8080\` for local backend development.
 
-- **Deploy:** `./scripts/deploy.sh` - automated production deployment
-- **Backup:** `./scripts/backup.sh` - backs up `learning_db` to `.sql.gz`
-- **Restore:** `./scripts/restore.sh <file>` - restores database from backup
-- **Health:** `./scripts/health-check.sh` - checks all service endpoints
+## 📝 API Documentation
 
----
+### Authentication Endpoints
 
-## 📊 Monitoring (Optional)
+\`\`\`
+POST /api/auth/register - Register new user
+POST /api/auth/login - Login user
+\`\`\`
 
-The full observability stack (Prometheus, Grafana, PgAdmin) is **optional** to save resources.
+### Skill Tree Endpoints
 
-```bash
-# Start with monitoring stack
-docker-compose -f docker-compose.yml -f docker-compose.monitoring.yml up -d
-```
+\`\`\`
+POST /api/ai/skill-tree/generate - Generate AI skill tree
+GET /api/skill-trees/user/{userId} - Get user's skill tree
+POST /api/skill-trees/{skillTreeId}/quests/{questId}/complete - Complete a quest
+\`\`\`
 
-| Service | URL | Default Creds |
-|---------|-----|---------------|
-| **Grafana** | http://localhost:3001 | `admin` / `admin123` |
-| **Prometheus** | http://localhost:9090 | - |
-| **PgAdmin** | http://localhost:5050 | `admin@learning-platform.com` / `admin` |
+## 🗄️ Database Setup
 
----
+The application uses **Supabase** (free PostgreSQL hosting) instead of local PostgreSQL.
 
-## 📁 Key Design Changes (Jan 2026 Cleanup)
+**To set up your own Supabase database:**
 
-1.  **Single Shared Database:** Moved from multiple partial DBs to one `learning_db` for simplicity. `learning-service` owns the schema via Liquibase.
-2.  **Clean Configuration:** All `application.properties` stripped of unused bloat. Profile-based config (`application-local.properties`, `application-docker.properties`) added.
-3.  **Correct Docker Ports:** Backend services run on internal 8080. Mapped to 8081-8083 externally.
-4.  **Optimized Builds:** Dockerfiles now fully support multi-module Maven structure with dependency caching.
+1. Go to https://supabase.com
+2. Create a new project
+3. Get your connection string from Settings → Database
+4. Update the \`.env\` file with your connection string
+5. The database schema will be created automatically via Liquibase migrations
 
----
+## 🎮 Usage
+
+1. **Register an Account**: Use the registration page to create an account
+2. **Generate Skill Tree**: Navigate to "Custom Path" and enter your learning goal
+3. **Explore Quests**: Click on quest nodes to see details and start quests
+4. **Track Progress**: Mark quests as complete and unlock dependent quests
+
+## 🔧 Development
+
+### Running Individual Services
+
+\`\`\`bash
+# Build specific service
+docker-compose build learning-service
+
+# Restart specific service
+docker-compose restart api-gateway
+
+# View logs
+docker logs -f learning-service
+\`\`\`
+
+### Frontend Development
+
+The frontend is deployed to Firebase, but you can run it locally:
+
+\`\`\`bash
+cd frontend
+npm install
+npm start
+\`\`\`
+
+Frontend will be available at http://localhost:3000
+
+### Database Migrations
+
+Liquibase migrations run automatically on service startup. Migration files are in:
+\`backend/learning-service/src/main/resources/db/changelog/\`
+
+## 🐛 Troubleshooting
+
+**Services not starting:**
+- Check Docker logs: \`docker-compose logs\`
+- Ensure ports 8080-8083, 6380 are available
+- Verify .env file configuration
+
+**Database connection errors:**
+- Verify Supabase connection string in .env
+- Check if database is accessible from your network
+- Ensure Liquibase migrations completed successfully
+
+**AI generation not working:**
+- The app works with hardcoded test data by default
+- To enable real AI: Add your Gemini API key to .env and rebuild ai-service
+
+## 📦 Deployment
+
+**Current Deployment:**
+- Frontend: Firebase Hosting
+- Database: Supabase PostgreSQL
+- Backend: Local Docker (for now)
+
+**For production deployment**, consider:
+- Railway.app (with $5 free credit)
+- Render.com (free tier)
+- Fly.io (free tier)
 
 ## 🤝 Contributing
 
-This is a portfolio project showcasing modern, reactive, AI-integrated architecture.
+This is a portfolio project. Feel free to fork and extend!
 
-**Current Focus:**
-- [ ] Completing Frontend integration
-- [ ] Enhancing User Service auth flows
-- [ ] Expanding AI lesson generation capabilities
+## 📄 License
+
+MIT License
+
+## 👤 Author
+
+**Joseph Jonas**
+- GitHub: [@Blasphomy](https://github.com/Blasphomy)
 
 ---
 
-**License:** MIT
+⭐ **Star this repo if you find it helpful!**
