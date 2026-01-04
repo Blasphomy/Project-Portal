@@ -3,7 +3,7 @@ package com.project.ai.controller;
 
 import com.project.ai.dto.GenerateSkillTreeRequest;
 import com.project.ai.dto.SkillTreeResponse;
-import com.project.ai.service.SemanticSearchService;
+//import com.project.ai.service.SemanticSearchService;
 import com.project.ai.service.GeminiAiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +21,7 @@ import java.util.List;
 public class AiController {
 
     private final GeminiAiService aiService;
-    private final SemanticSearchService semanticSearchService;
+//    private final SemanticSearchService semanticSearchService;
 
     /**
      * Generates a personalized skill tree for a user based on their stated goal.
@@ -40,10 +40,10 @@ public class AiController {
         return aiService.generateSkillTree(request.goal(), userId);
     }
 
-    @GetMapping("/search")
-    public Mono<List<String>> semanticSearch(@RequestParam String query) {
-        return Mono.just(semanticSearchService.semanticSearch(query, 5));
-    }
+//    @GetMapping("/search")
+//    public Mono<List<String>> semanticSearch(@RequestParam String query) {
+//        return Mono.just(semanticSearchService.semanticSearch(query, 5));
+//    }
 
     /**
      * LEGACY - This was used for generating simple text content and will be phased out.
