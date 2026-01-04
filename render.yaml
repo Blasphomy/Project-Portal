@@ -1,7 +1,4 @@
 services:
-  # PostgreSQL Database (Supabase will replace this)
-  # We'll use external Supabase PostgreSQL instead
-  
   # Learning Service
   - type: web
     name: learning-service
@@ -14,19 +11,11 @@ services:
       - key: SERVER_PORT
         value: 8080
       - key: DATABASE_URL
-        fromDatabase:
-          name: project-portal-db
-          property: connectionString
+        sync: false
       - key: SPRING_DATA_REDIS_HOST
-        fromService:
-          name: redis
-          type: redis
-          property: host
+        value: redis-placeholder
       - key: SPRING_DATA_REDIS_PORT
-        fromService:
-          name: redis
-          type: redis
-          property: port
+        value: 6379
     healthCheckPath: /actuator/health
     
   # User Service
@@ -41,16 +30,13 @@ services:
       - key: SERVER_PORT
         value: 8080
       - key: DATABASE_URL
-        fromDatabase:
-          name: project-portal-db
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: SPRING_DATA_REDIS_HOST
-        fromService:
-          name: redis
-          type: redis
-          property: host
+        value: redis-placeholder
+      - key: SPRING_DATA_REDIS_PORT
+        value: 6379
     healthCheckPath: /actuator/health
     
   # AI Service
@@ -67,10 +53,9 @@ services:
       - key: GEMINI_API_KEY
         sync: false
       - key: SPRING_DATA_REDIS_HOST
-        fromService:
-          name: redis
-          type: redis
-          property: host
+        value: redis-placeholder
+      - key: SPRING_DATA_REDIS_PORT
+        value: 6379
     healthCheckPath: /actuator/health
     
   # API Gateway
@@ -85,23 +70,10 @@ services:
       - key: SERVER_PORT
         value: 8080
       - key: LEARNING_SERVICE_URL
-        fromService:
-          name: learning-service
-          type: web
-          property: host
+        value: http://learning-service:8080
       - key: USER_SERVICE_URL
-        fromService:
-          name: user-service
-          type: web
-          property: host
+        value: http://user-service:8080
       - key: AI_SERVICE_URL
-        fromService:
-          name: ai-service
-          type: web
-          property: host
+        value: http://ai-service:8080
     healthCheckPath: /actuator/health
 
-databases:
-  - name: project-portal-db
-    databaseName: learning_db
-    user: postgres
